@@ -1,0 +1,9 @@
+#ifndef CONSTANTES
+#define CONSTANTES
+
+class Constantes{
+    static const int MAX_RESISTENCIA = 8, MAX_ACTIVIDADDES = 5, TIEMPO_ESPERA = 150, TIEMPO_NUEVA_ACTIVIDAD = 180;
+};
+
+#endif // CONSTANTES
+
