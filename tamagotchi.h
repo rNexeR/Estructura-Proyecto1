@@ -8,6 +8,7 @@
 class Tamagotchi
 {
 public:
+    Tamagotchi();
     Tamagotchi(string nombre, int fh, int fs, int fe, int fd);
     ~Tamagotchi();
     void recibirCoin(Nodo<int> regalo);
@@ -17,18 +18,28 @@ public:
     bool curar();
     bool asear();
     void usarRegalo();
-    bool chequiar();
+    void chequiar();
 
     //gets y sets
+    string getNombre();
     int getTiempoEspera();
     int getResistencia();
     int getVida();
+    int getHambre();
+    int getSueno();
+    int getEnfermo();
+    int getDesechos();
+    int getCantCoins();
+    int getCantRegalos();
 
     void setTiempoEspera(int cant);
     int setValoresResistencia(int rhambre, int rsueno, int renfermedad, int rdesechos);
 
     void restarVida(int cant);
+    void restarTiempoEspera();
     void agregarActividad(int tipo);
+    void agregarVictoria(string mensaje);
+    void agregarDerrota(string mensaje);
 
 private:
     string nombre;

@@ -9,8 +9,10 @@ template<typename Tipo>
 class Pila
 {
 public:
+    int size;
     Pila(){
         tope = NULL;
+        size = 0;
     }
 
     ~Pila(){
@@ -20,11 +22,13 @@ public:
     void agregar(string type, Tipo valor){
         if (!tope){
             tope = new Nodo<Tipo>(type, valor);
+            size++;
             return;
         }
         Nodo<Tipo>* temp = tope;
         tope = new Nodo<Tipo>(type, valor);;
         tope->sig = temp;
+        size++;
     }
 
     bool vacia(){
@@ -38,6 +42,7 @@ public:
             Nodo<Tipo>* temp = tope;
             tope = tope->sig;
             delete temp;
+            size--;
             return true;
         }
         return false;
@@ -45,6 +50,7 @@ public:
 
     void limpiar(){
         while(liberarTope());
+        size = 0;
     }
 
     Nodo<Tipo>* getTope(){

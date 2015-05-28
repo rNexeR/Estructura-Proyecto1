@@ -9,11 +9,59 @@ Tamagotchi::Tamagotchi(string nombre, int fh, int fs, int fe, int fd){
     tiempoEspera = 0;
     vida = 100;
     victConsecutivas = 0;
-    resistenciaTotal = Constantes.MAX_RESISTENCIA;
+    resistenciaTotal = MAX_RESISTENCIA;
+}
+
+Tamagotchi::Tamagotchi(){
+    nombre = "";
+    fhambre = 0;
+    fsueno = 0;
+    fenfermedad = 0;
+    fdesechos = 0;
+    tiempoEspera = 0;
+    vida = 100;
+    victConsecutivas = 0;
+    resistenciaTotal = MAX_RESISTENCIA;
 }
 
 Tamagotchi::~Tamagotchi(){
 
+}
+
+string Tamagotchi::getNombre(){
+    return nombre;
+}
+
+int Tamagotchi::getHambre(){
+    if(hambre.getTope())
+        return hambre.getTope()->valor;
+    return 0;
+}
+
+int Tamagotchi::getSueno(){
+    if(sueno.getTope())
+        return sueno.getTope()->valor;
+    return 0;
+}
+
+int Tamagotchi::getEnfermo(){
+    if(enfermedad.getTope())
+        return enfermedad.getTope()->valor;
+    return 0;
+}
+
+int Tamagotchi::getDesechos(){
+    if(desechos.getTope())
+        return desechos.getTope()->valor;
+    return 0;
+}
+
+int Tamagotchi::getCantCoins(){
+    return misCoins.size;
+}
+
+int Tamagotchi::getCantRegalos(){
+    return misRegalos.size;
 }
 
 void Tamagotchi::recibirCoin(Nodo<int> regalo){
@@ -28,34 +76,34 @@ void Tamagotchi::regalarCoin(Tamagotchi* destino){
 }
 
 bool Tamagotchi::alimentar(){
-    if(tiempoEspera > 0)
-        return false;
-    tiempoEspera = Constantes.TIEMPO_ESPERA;
-    hambre.liberarTope();
+    if(hambre.getTope())
+        hambre.liberarTope();
+    else
+        agregarActividad(3);
     return true;
 }
 
 bool Tamagotchi::dormir(){
-    if(tiempoEspera > 0)
-        return false;
-    tiempoEspera = Constantes.TIEMPO_ESPERA;
-    sueno.liberarTope();
+    if(sueno.getTope())
+        sueno.liberarTope();
+    else
+        agregarActividad(2);
     return true;
 }
 
 bool Tamagotchi::curar(){
-    if(tiempoEspera > 0)
-        return false;
-    tiempoEspera = Constantes.TIEMPO_ESPERA;
-    enfermedad.liberarTope();
+    if(enfermedad.getTope())
+        enfermedad.liberarTope();
+    else
+        agregarActividad(1);
     return true;
 }
 
 bool Tamagotchi::asear(){
-    if(tiempoEspera > 0)
-        return false;
-    tiempoEspera = Constantes.TIEMPO_ESPERA;
-    desechos.liberarTope();
+    if(desechos.getTope())
+        desechos.liberarTope();
+    else
+        agregarActividad(0);
     return true;
 }
 
@@ -63,18 +111,34 @@ void Tamagotchi::usarRegalo(){
     if(!misRegalos.getFrente())
         return;
     string tipo = misRegalos.getFrente()->tipo;
-    if (tipo == "Hambre")
-        hambre.liberarTope();
-    else if (tipo == "Sueno")
-        sueno.liberarTope();
-    else if (tipo == "Enfermedad")
-        enfermedad.liberarTope();
-    else if (tipo == "Desechos")
-        desechos.liberarTope();
+    misRegalos.liberarFrente();
+    if (tipo == "Hambre"){
+        alimentar();
+    }else if (tipo == "Sueno"){
+        dormir();
+    }else if (tipo == "Enfermedad"){
+        curar();
+    }else if (tipo == "Desechos"){
+        asear();
+    }
 }
 
-bool Tamagotchi::chequiar(){
-    if (victConsecutivas >=3){
+void Tamagotchi::agregarVictoria(string mensaje){
+    logros.agregar("Victoria", mensaje);
+}
+
+void Tamagotchi::agregarDerrota(string mensaje){
+    logros.agregar("Derrota", mensaje);
+}
+
+void Tamagotchi::chequiar(){
+    if(vida <= 0)
+        return;
+    if(!hambre.getTope() && !enfermedad.getTope() && !desechos.getTope() && !sueno.getTope())
+        victConsecutivas++;
+
+    if (victConsecutivas>=5){
+        victConsecutivas=0;
         int val = rand()%4;
         string tipo;
         switch (val) {
@@ -92,18 +156,20 @@ bool Tamagotchi::chequiar(){
             break;
         }
         misCoins.agregar(tipo, 1);
-    }else if(victConsecutivas <=-3){
-        int cant = 0;
-        if (hambre.getTope())
-            cant+=hambre.getTope()->valor;
-        if (enfermedad.getTope())
-            cant+=enfermedad.getTope()->valor;
-        if (desechos.getTope())
-            cant+=desechos.getTope()->valor;
-        if (sueno.getTope())
-            cant+=sueno.getTope()->valor;
-        restarVida(cant);
     }
+
+    int cant = 0;
+    if (hambre.getTope())
+        cant+=(hambre.getTope()->valor - fhambre);
+    if (enfermedad.getTope())
+        cant+=(enfermedad.getTope()->valor - fenfermedad);
+    if (desechos.getTope())
+        cant+=(desechos.getTope()->valor - fdesechos);
+    if (sueno.getTope())
+        cant+=(sueno.getTope()->valor - fsueno);
+    cout<<cant<<endl;
+    if(cant>0)
+        restarVida(cant);
 }
 
 //gets y sets
@@ -136,6 +202,10 @@ void Tamagotchi::restarVida(int cant){
         vida = 0;
 }
 
+void Tamagotchi::restarTiempoEspera(){
+    tiempoEspera--;
+}
+
 void Tamagotchi::agregarActividad(int tipo){
     int val;
     if(tipo<0 || tipo > 3)
@@ -144,25 +214,35 @@ void Tamagotchi::agregarActividad(int tipo){
         val = tipo;
     switch (val) {
     case 0:
-        if(hambre.getTope())
+        if(hambre.size > MAX_ACTIVIDADDES)
+            break;
+        if(hambre.getTope()!=NULL){
             hambre.agregar("NM", hambre.getTope()->valor+1);
+        }
         else
             hambre.agregar("NM", 1);
         break;
-    case 1:
-        if(desechos.getTope())
+    case 3:
+        if(desechos.size > MAX_ACTIVIDADDES)
+            break;
+        if(desechos.getTope()!=NULL){
             desechos.agregar("NM", desechos.getTope()->valor+1);
+        }
         else
             desechos.agregar("NM", 1);
         break;
     case 2:
-        if(enfermedad.getTope())
+        if(enfermedad.size >= MAX_ACTIVIDADDES)
+            break;
+        if(enfermedad.getTope()!=NULL)
             enfermedad.agregar("NM", enfermedad.getTope()->valor+1);
         else
             enfermedad.agregar("NM", 1);
         break;
-    case 3:
-        if(sueno.getTope())
+    case 1:
+        if(sueno.size > MAX_ACTIVIDADDES)
+            break;
+        if(sueno.getTope()!=NULL)
             sueno.agregar("NM", sueno.getTope()->valor+1);
         else
             sueno.agregar("NM", 1);

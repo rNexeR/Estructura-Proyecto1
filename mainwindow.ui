@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>238</height>
+    <height>215</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
      <rect>
       <x>100</x>
       <y>10</y>
-      <width>291</width>
+      <width>191</width>
       <height>29</height>
      </rect>
     </property>
@@ -228,23 +228,19 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>400</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuTamagotchi">
-    <property name="title">
-     <string>Tamagotchi</string>
+   <widget class="QPushButton" name="btnCuidar_2">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>10</y>
+      <width>96</width>
+      <height>31</height>
+     </rect>
     </property>
-    <addaction name="actionCrear"/>
+    <property name="text">
+     <string>Crear</string>
+    </property>
    </widget>
-   <addaction name="menuTamagotchi"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">

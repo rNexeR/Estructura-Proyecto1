@@ -9,9 +9,11 @@ template<typename Tipo>
 class Cola
 {
 public:
+    int size;
     Cola(){
         frente = NULL;
         ultimo = NULL;
+        size = 0;
     }
 
     ~Cola(){
@@ -22,10 +24,12 @@ public:
         if(!frente){
             frente = new Nodo<Tipo>(type, valor);
             ultimo = frente;
+            size++;
             return;
         }
         ultimo->sig = new Nodo<Tipo>(type, valor);
         ultimo = ultimo->sig;
+        size++;
     }
 
     bool vacia(){
@@ -39,6 +43,7 @@ public:
             Nodo<Tipo>* temp = frente;
             frente = frente->sig;
             delete temp;
+            size--;
             return true;
         }
         ultimo = NULL;
@@ -47,6 +52,7 @@ public:
 
     void limpiar(){
         while(liberarFrente());
+        size = 0;
     }
 
     Nodo<Tipo>* getFrente(){

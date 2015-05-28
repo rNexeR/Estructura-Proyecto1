@@ -15,7 +15,8 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     tamagotchi.cpp \
-    CrearTamagotchi.cpp
+    CrearTamagotchi.cpp \
+    Cuidar.cpp
 
 HEADERS  += mainwindow.h \
     Nodo.h \
@@ -23,10 +24,12 @@ HEADERS  += mainwindow.h \
     Cola.h \
     tamagotchi.h \
     constantes.h \
-    CrearTamagotchi.h
+    CrearTamagotchi.h \
+    Cuidar.h
 
 FORMS    += mainwindow.ui \
-    CrearTamagotchi.ui
+    CrearTamagotchi.ui \
+    Cuidar.ui
 
 RESOURCES += \
     resources.qrc
