@@ -56,6 +56,10 @@ int Tamagotchi::getDesechos(){
     return 0;
 }
 
+string Tamagotchi::getRegalo(){
+    return misRegalos.getFrente()->tipo;
+}
+
 int Tamagotchi::getCantCoins(){
     return misCoins.size;
 }

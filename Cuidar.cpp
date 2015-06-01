@@ -52,6 +52,8 @@ void Cuidar::setParametros(list<Tamagotchi*>* animales, Tamagotchi* cuidar){
 }
 
 void Cuidar::update(){
+    if(actual->getVida()<=0)
+        return;
     actual->chequiar();
     segundos+=1;
 
@@ -81,11 +83,17 @@ void Cuidar::update(){
 
     cout<<hambre<<" , "<<sueno<<" , "<<enfermo<<" , "<<desechos<<endl;
 
-    if(hambre == 100 || sueno == 100 || enfermo ==100 || desechos == 100)
-        actual->agregarDerrota("Una o mas Pilas de Actividades estan Full");
+    if(hambre >= 50 || sueno >= 50 || enfermo >= 50 || desechos >= 50){
+        string derrota = "Una o mas Pilas de Actividades estan arriba del 50%";
+        actual->agregarDerrota(derrota);
+        ui->logros->addItem("Derrota: " + QString::fromStdString(derrota));
+    }
 
-    if(segundos > 50 && hambre < 100 && sueno < 100 && enfermo < 100 && desechos < 0)
-        actual->agregarVictoria("Todas las Pilas de Actividades estan Vacias");
+    if(segundos % 10 == 0 && hambre <= 50 && sueno <= 50 && enfermo <= 50 && desechos <= 50){
+        string victoria = "Todas las Pilas de Actividades estan abajo del 50%";
+        actual->agregarVictoria(victoria);
+        ui->logros->addItem("Victoria: " + QString::fromStdString(victoria));
+    }
 
     ui->vida->setValue(vida);
     ui->hambre->setValue(hambre);
@@ -134,20 +142,28 @@ void Cuidar::on_pushButton_4_clicked()//Desechos
 
 void Cuidar::on_pushButton_5_clicked()//Donar
 {
-    if(ui->txtcoins->text().toInt() <=0)
+    if(ui->txtcoins->text().toInt() <=0){
+        ui->txtRegalo->setText("No hay Coins que donar");
         return;
+    }
     int x = ui->cmbanimales->currentIndex();
     list<Tamagotchi*>::iterator i = animales->begin();
     for(int y = 0; y<x; y++)
         i++;
     Tamagotchi* donar = (*i);
-    if(donar != actual)
+    if(donar != actual){
         actual->regalarCoin(donar);
+        ui->txtRegalo->setText(QString::fromStdString("Coin regalado a: "+donar->getNombre()));
+    }else{
+        ui->txtRegalo->setText(QString::fromStdString("Dona a otros Tamagotchis"));
+    }
 }
 
 void Cuidar::on_pushButton_6_clicked()//Regalo
 {
     if(ui->txtregalos->text().toInt() <=0)
         return;
+    string regalo = "Regalo Abierto: " + actual->getRegalo();
+    ui->txtRegalo->setText(QString::fromStdString(regalo));
     actual->usarRegalo();
 }

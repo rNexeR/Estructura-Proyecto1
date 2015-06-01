@@ -29,6 +29,7 @@ public:
     int getSueno();
     int getEnfermo();
     int getDesechos();
+    string getRegalo();
     int getCantCoins();
     int getCantRegalos();
 
